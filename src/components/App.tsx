@@ -5,7 +5,7 @@ const App = () => {
   return (
     <div className={'page'}>
       <img className={'logo'} src={logo} alt="logo" />
-      <p className={'name'}>zzw created !</p>
+      <p className={'name'}>zzw created 123 !</p>
     </div>
   );
 };

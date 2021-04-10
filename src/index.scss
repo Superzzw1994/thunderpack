@@ -1,10 +1,10 @@
 .rootWrapper {
   .page {
     width: 100%;
-    display: flex;
+    @include box-center(center, center);
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    color: $color-primary;
+
     .logo {
       width: 120px;
     }

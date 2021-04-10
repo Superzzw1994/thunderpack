@@ -1,6 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { DefinePlugin } = require('webpack');
+const {DefinePlugin} = require('webpack');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = env => {
@@ -35,7 +35,7 @@ module.exports = env => {
           ]
         },
         {
-          test: /\.less$/,
+          test: /\.sass|scss$/,
           use: [
             {
               loader:
@@ -46,14 +46,24 @@ module.exports = env => {
             {
               loader: 'css-loader',
               options: {
-                importLoaders: 2
+                importLoaders: 3
               }
             },
             {
               loader: 'postcss-loader'
             },
             {
-              loader: 'less-loader'
+              loader: 'sass-loader'
+            },
+            {
+              loader: 'sass-resources-loader',
+              options: {
+                resources: [
+                  // resolve方法第二个参数为scss配置文件地址，如果有多个，就进行依次添加即可
+                  path.resolve(__dirname, '../src/styles/tools/_sassMagic.scss'),
+                  path.resolve(__dirname, '../src/styles/settings/var.scss'),
+                ]
+              }
             }
           ]
         },

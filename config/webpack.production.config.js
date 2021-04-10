@@ -1,4 +1,3 @@
-const path = require('path');
 const webpackBaseConfig = require('./webpack.common.config');
 const TerserPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
