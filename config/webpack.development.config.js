@@ -7,7 +7,6 @@ const webpackDevelopmentConfig = {
   plugins: [new ReactRefreshWebpackPlugin()],
   devServer: {
     hot: true,
-    hotOnly: true,
     open: true,
     host: '0.0.0.0',
     port: 1994,
