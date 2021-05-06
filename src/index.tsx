@@ -13,9 +13,13 @@ const Root = () => {
   return (
     <div className={'rootWrapper'}>
       <Flow className={'flowWrapper'} getGraph={getGraph}
-            toolBars={<ToolBarsWrapper name={'zzw'} className={'toolBars'}>
-              <div>123</div>
-              <div>zzzzzzz</div>
+            toolBars={<ToolBarsWrapper name={'zzw'} className={'toolBars'} detailEnums={{
+              undo: {
+                name: 123
+              }
+            }}>
+              <div data-command={'undo'}>撤回</div>
+              <div data-command={'add'}>添加</div>
             </ToolBarsWrapper>} />
     </div>
   );
