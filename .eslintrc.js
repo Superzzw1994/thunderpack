@@ -13,5 +13,7 @@ module.exports = {
     ecmaVersion: 12
   },
   plugins: ['react', '@typescript-eslint'],
-  rules: {}
+  rules: {
+    'react/prop-types': 0
+  }
 };
