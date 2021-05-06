@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import Flow from './components/flow';
 import ToolBarsWrapper from './components/flow/components/ToolBarsWrapper';
 import './index.less';
+import ToolBar from './components/flow/plugins/ToolBars';
 
 const Root = () => {
   const [graph, setGraph] = useState<Object | null>(null);
@@ -11,11 +12,11 @@ const Root = () => {
   };
   return (
     <div className={'rootWrapper'}>
-      <ToolBarsWrapper className={'toolBars'}>
-        <div>123</div>
-        <div>123</div>
-      </ToolBarsWrapper>
-      <Flow className={'flowWrapper'} getGraph={getGraph} />
+      <Flow className={'flowWrapper'} getGraph={getGraph}
+            toolBars={<ToolBarsWrapper name={'zzw'} className={'toolBars'}>
+              <div>123</div>
+              <div>zzzzzzz</div>
+            </ToolBarsWrapper>} />
     </div>
   );
 };
