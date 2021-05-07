@@ -4,7 +4,7 @@ class Command {
   private _cfgs: any;
   private _events: null;
   private list: any[];
-  private queue: any[];
+  private queue: any[]; // commands队列
   private destroyed: boolean;
 
   constructor() {
@@ -31,66 +31,8 @@ class Command {
     graph.getCommands = () => {
       return this.get('_command').queue;
     };
-    graph.getCurrentCommand = () => {
-      const c = this.get('_command');
-      return c.queue[c.current - 1];
-    };
-    graph.executeCommand = (name, cfg) => {
-      this.execute(name, graph, cfg);
-    };
-    graph.commandEnable = (name) => {
-      return this.enable(name, graph);
-    };
   }
 
-  // registerCommand(name, cfg) {
-  //   if (this[name]) {
-  //     mix(this[name], cfg);
-  //   } else {
-  //     const cmd = mix({}, {
-  //       name: name,
-  //       shortcutCodes: [],
-  //       queue: true,
-  //       executeTimes: 1,
-  //       init() {
-  //       },
-  //       enable() {
-  //         return true;
-  //       },
-  //       execute(graph) {
-  //         this.snapShot = graph.save();
-  //         this.selectedItems = graph.get('selectedItems');
-  //         this.method && (isString(this.method) ? graph[this.method]() : this.method(graph));
-  //       },
-  //       back(graph) {
-  //         graph.read(this.snapShot);
-  //         graph.set('selectedItems', this.selectedItems);
-  //       }
-  //     }, cfg);
-  //     this[name] = cmd;
-  //     this.list.push(cmd);
-  //   }
-  // }
-
-  execute(name, graph, cfg) {
-    const cmd = mix({}, this[name], cfg);
-    const manager = this.get('_command');
-    if (cmd.enable(graph)) {
-      cmd.init();
-      if (cmd.queue) {
-        manager.queue.splice(manager.current, manager.queue.length - manager.current, cmd);
-        manager.current++;
-      }
-    }
-    graph.emit('beforecommandexecute', { command: cmd });
-    cmd.execute(graph);
-    graph.emit('aftercommandexecute', { command: cmd });
-    return cmd;
-  }
-
-  enable(name, graph) {
-    return this[name].enable(graph);
-  }
 
   destroyPlugin() {
     this._events = null;
