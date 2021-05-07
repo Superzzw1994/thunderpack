@@ -43,6 +43,10 @@ const Flow: React.FC<flowProps> = (props) => {
       initGlobalEvents(graph.current);
       setIsReady(true);
     }
+    return () => {
+      unbindGlobalEvents(graph.current);
+      graph.current = null;
+    };
   }, []);
   useEffect(() => {
     if (getGraph && isReady) {
@@ -50,16 +54,24 @@ const Flow: React.FC<flowProps> = (props) => {
     }
     commandRef.current.initPlugin(graph.current, customCommands);
   }, [getGraph, isReady]);
+  const beforeCommandExecute = (params) => {
+  };
+  const afterCommandExecuted = (params) => {
+  };
   const initGlobalEvents = (graph) => {
-    graph.on('beforeCommandExecute', (params) => {
-    });
-    graph.on('afterCommandExecuted', (params) => {
-    });
+    graph.on('beforeCommandExecute', beforeCommandExecute);
+    graph.on('afterCommandExecuted', afterCommandExecuted);
+  };
+  const unbindGlobalEvents = (graph) => {
+    if (graph) {
+      graph.off('beforeCommandExecute', beforeCommandExecute);
+      graph.off('afterCommandExecuted', afterCommandExecuted);
+    }
   };
   return <Fragment>
     {toolBars && React.cloneElement(toolBars, {
       ref: toolBarRef,
-      graph: graph.current,
+      graph: graph.current
     })}
     <div className={className} ref={flowRef}></div>
   </Fragment>;
