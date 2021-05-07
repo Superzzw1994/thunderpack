@@ -1,13 +1,5 @@
 import React, { forwardRef, PropsWithChildren, useEffect, useImperativeHandle, useRef } from 'react';
-
-interface toolBarsWrapperProps {
-  children: React.ReactNodeArray;
-  className?: string;
-  graph?: Object | null;
-  detailEnums?: Object;
-
-  [propName: string]: any
-}
+import { toolBarsWrapperProps } from '../types';
 
 const ToolBarsWrapper = (props, ref) => {
   const { children, className, graph, detailEnums } = props;

@@ -23,19 +23,15 @@ class Toolbar {
 
   initPlugin(graph: any) {
     const self = this;
-    console.log(graph);
     this.set('graph', graph);
     const events = self.getEvents();
-    console.log(events, 'events');
     const bindEvents = {};
     each(events, (v, k) => {
-      console.log(v);
       const event = wrapBehavior(self, v);
       bindEvents[k] = event;
       graph.on(k, event);
     });
     this._events = bindEvents;
-    console.log(bindEvents, 'bindEvents');
     this.initEvents();
     this.updateToolbar();
   }
@@ -50,7 +46,6 @@ class Toolbar {
     const children = parentNode.querySelectorAll('div[data-command]');
     each(children, (child, i) => {
       const cmdName = child.getAttribute('data-command');
-      console.log(cmdName, 'cmdName');
       child.addEventListener('click', e => {
         graph.commandEnable(cmdName) && graph.executeCommand(cmdName);
       });

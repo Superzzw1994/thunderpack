@@ -1,15 +1,9 @@
 import React, { useEffect, useRef, useState, Fragment } from 'react';
 import G6 from '@antv/g6';
 import ToolBar from './plugins/ToolBars';
+import Command from './plugins/CommandLifeCycle';
+import { commands, flowProps } from './types';
 
-interface flowProps {
-  className?: string; // 容器类名
-  height?: number; // 画布高度
-  width?: number | string; // 画布宽度
-  mode?: 'default' | 'view' | 'edit'; // 画布模式
-  getGraph?: (graph: Object) => void; // 获取 graph 实例的函数
-  toolBars?: React.ReactElement // 工具栏的ReactNode
-}
 
 const Flow: React.FC<flowProps> = (props) => {
   const { height, width, mode, className, getGraph, toolBars } = props;
@@ -17,9 +11,16 @@ const Flow: React.FC<flowProps> = (props) => {
   const toolBarRef = useRef(null);
   const graph = useRef(null as any);
   const flowRef = useRef(null as any);
+  const commandRef = useRef<commands>({} as commands);
   useEffect(() => {
     if (!graph.current) {
       let plugins: {}[] = [];
+
+      // 初始化 Command系统实例, 并保存到ref中, 保留在 数据更新或用户传入customCommands 时增加系统command的能力(通过在useEffect监听的变量更新时调用initPlugin实现)
+      commandRef.current = new Command();
+      plugins.push(commandRef.current);
+
+
       // 如果渲染工具栏就初始化 ToolBar 实例
       if (toolBarRef.current) {
         const toolbar = new ToolBar({
@@ -27,6 +28,8 @@ const Flow: React.FC<flowProps> = (props) => {
         });
         plugins.push(toolbar);
       }
+
+
       // 继承父元素的宽高
       const wrapperWidth = flowRef.current.offsetWidth;
       const wrapperHeight = flowRef.current.offsetHeight;
@@ -43,6 +46,12 @@ const Flow: React.FC<flowProps> = (props) => {
     if (getGraph && isReady) {
       getGraph(graph.current);
     }
+    // const customCommands = {
+    //   name: (graph) => {
+    //     console.log(graph);
+    //   }
+    // };
+    // commandRef.current.initPlugin(graph.current, customCommands);
   }, [getGraph, isReady]);
   return <Fragment>
     {toolBars && React.cloneElement(toolBars, {
