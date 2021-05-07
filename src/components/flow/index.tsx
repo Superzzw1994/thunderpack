@@ -6,7 +6,7 @@ import { commands, flowProps } from './types';
 
 
 const Flow: React.FC<flowProps> = (props) => {
-  const { height, width, mode, className, getGraph, toolBars } = props;
+  const { height, width, mode, className, getGraph, toolBars, wrapperClassName, customCommands } = props;
   const [isReady, setIsReady] = useState(false);
   const toolBarRef = useRef(null);
   const graph = useRef(null as any);
@@ -33,12 +33,14 @@ const Flow: React.FC<flowProps> = (props) => {
       // 继承父元素的宽高
       const wrapperWidth = flowRef.current.offsetWidth;
       const wrapperHeight = flowRef.current.offsetHeight;
+
       graph.current = new G6.Graph({
         container: flowRef.current,
         height: height || wrapperHeight,
         width: width || wrapperWidth,
         plugins
       });
+      initGlobalEvents(graph.current);
       setIsReady(true);
     }
   }, []);
@@ -46,17 +48,18 @@ const Flow: React.FC<flowProps> = (props) => {
     if (getGraph && isReady) {
       getGraph(graph.current);
     }
-    // const customCommands = {
-    //   name: (graph) => {
-    //     console.log(graph);
-    //   }
-    // };
-    // commandRef.current.initPlugin(graph.current, customCommands);
+    commandRef.current.initPlugin(graph.current, customCommands);
   }, [getGraph, isReady]);
+  const initGlobalEvents = (graph) => {
+    graph.on('beforeCommandExecute', (params) => {
+    });
+    graph.on('afterCommandExecuted', (params) => {
+    });
+  };
   return <Fragment>
     {toolBars && React.cloneElement(toolBars, {
       ref: toolBarRef,
-      graph: graph.current
+      graph: graph.current,
     })}
     <div className={className} ref={flowRef}></div>
   </Fragment>;

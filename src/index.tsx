@@ -3,8 +3,30 @@ import ReactDOM from 'react-dom';
 import Flow from './components/flow';
 import ToolBarsWrapper from './components/flow/components/ToolBarsWrapper';
 import './index.less';
-import ToolBar from './components/flow/plugins/ToolBars';
 
+const customCommands = {
+  addNode: {
+    name: 'addNode',
+    commandShouldExecute(graph) {
+      return true;
+    },
+    commandWillExecute(graph) {
+      return new Promise<Object>((resolve, reject) => {
+        return resolve({
+          age: 18
+        });
+      });
+    },
+    execute: (graph, data: Object) => {
+      return new Promise<Object>((resolve, reject) => {
+        return resolve({
+          name: 'zzw',
+          ...data
+        });
+      });
+    }
+  }
+};
 const Root = () => {
   const [graph, setGraph] = useState<Object | null>(null);
   const getGraph = (graph: Object) => {
@@ -12,7 +34,9 @@ const Root = () => {
   };
   return (
     <div className={'rootWrapper'}>
-      <Flow className={'flowWrapper'} getGraph={getGraph}
+      <Flow className={'flowWrapper'}
+            getGraph={getGraph}
+            customCommands={customCommands}
             toolBars={<ToolBarsWrapper name={'zzw'} className={'toolBars'} detailEnums={{
               undo: {
                 name: 123

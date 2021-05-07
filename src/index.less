@@ -1,18 +1,22 @@
-.rootWrapper {
-  .page {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-
-    .logo {
-      width: 120px;
-    }
-  }
+* {
+  margin: 0;
+  padding: 0;
 }
 
-.flowWrapper {
-  width: 800px;
-  height: 800px;
+.rootWrapper {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+
+  .toolBars {
+    width: 100%;
+    height: 64px;
+  }
+
+  .flowWrapper {
+    width: 100%;
+    height: ~'calc(100% - 64px)';
+    background: red;
+  }
 }
