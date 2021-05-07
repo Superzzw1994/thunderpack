@@ -6,7 +6,7 @@ import { commands, flowProps } from './types';
 
 
 const Flow: React.FC<flowProps> = (props) => {
-  const { height, width, mode, className, getGraph, toolBars, wrapperClassName, customCommands } = props;
+  const { height, width, mode, className, getGraph, toolBars, customCommands } = props;
   const [isReady, setIsReady] = useState(false);
   const toolBarRef = useRef(null);
   const graph = useRef(null as any);
@@ -48,26 +48,37 @@ const Flow: React.FC<flowProps> = (props) => {
       graph.current = null;
     };
   }, []);
+
   useEffect(() => {
     if (getGraph && isReady) {
       getGraph(graph.current);
     }
-    commandRef.current.initPlugin(graph.current, customCommands);
   }, [getGraph, isReady]);
+
+  useEffect(() => {
+    if (customCommands) {
+      commandRef.current.initPlugin(graph.current, customCommands);
+    }
+  }, [customCommands]);
+
   const beforeCommandExecute = (params) => {
   };
+
   const afterCommandExecuted = (params) => {
   };
+
   const initGlobalEvents = (graph) => {
     graph.on('beforeCommandExecute', beforeCommandExecute);
     graph.on('afterCommandExecuted', afterCommandExecuted);
   };
+
   const unbindGlobalEvents = (graph) => {
     if (graph) {
       graph.off('beforeCommandExecute', beforeCommandExecute);
       graph.off('afterCommandExecuted', afterCommandExecuted);
     }
   };
+
   return <Fragment>
     {toolBars && React.cloneElement(toolBars, {
       ref: toolBarRef,
