@@ -56,8 +56,8 @@ class Command {
       return this.get('_command').queue;
     };
 
-    // 向全局暴露 修改customCommand是否可以执行 的接口
-    graph.commandEnable = (name) => {
+    // 向全局暴露 获取customCommand是否可以执行 的接口
+    graph.commandCanExecute = (name) => {
       return this.enable(name, graph);
     };
 
@@ -86,12 +86,12 @@ class Command {
     const cmd = mix({}, this[name], cfg);
     const manager = this.get('_command');
     if (cmd.commandShouldExecute(graph)) {
-      // emit一个全局事件, 在改command执行前处理一些与该command无关的操作
+      // emit一个全局事件, 在该command执行前处理一些与该command无关的操作
       graph.emit('beforeCommandExecute', { command: cmd });
       return cmd.commandWillExecute(graph).then(res => {
         return cmd.execute(graph, res);
       }).then(res => {
-        // emit一个全局事件, 在改command执行结束后处理一些与该command无关的操作
+        // emit一个全局事件, 在该command执行结束后处理一些与该command无关的操作
         graph.emit('afterCommandExecuted', { command: cmd });
         return cmd.commandDidExecuted(graph, res, cmd);
       });
@@ -99,7 +99,9 @@ class Command {
   }
 
   enable(name, graph) {
-    return this[name].enable(graph);
+    console.log(name, 'name');
+    console.log(this[name]);
+    return this[name] && this[name].commandShouldExecute(graph);
   }
 
   destroyPlugin() {
@@ -135,7 +137,7 @@ class Command {
 
   initCommands(customCommands) {
     const cmdPlugin = this;
-
+    console.log(customCommands, 'customCommands');
     // 注册自定义command
     if (customCommands && Object.keys(customCommands).length) {
       Object.keys(customCommands).forEach(command => {

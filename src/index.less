@@ -12,6 +12,20 @@
   .toolBars {
     width: 100%;
     height: 64px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    .tool {
+      //width: 20px;
+      //height: 20px;
+      line-height: 32px;
+      border: 1px solid black;
+
+      &:hover {
+        cursor: pointer;
+      }
+    }
   }
 
   .flowWrapper {

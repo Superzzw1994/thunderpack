@@ -33,11 +33,11 @@ class Toolbar {
     });
     this._events = bindEvents;
     this.initEvents();
-    this.updateToolbar();
+    // this.updateToolbar();
   }
 
   getEvents() {
-    return { afteritemselected: 'updateToolbar', aftercommandexecute: 'updateToolbar' };
+    return { afterItemSelected: 'updateToolbar', afterCommandexecuted: 'updateToolbar' };
   }
 
   initEvents() {
@@ -47,36 +47,37 @@ class Toolbar {
     each(children, (child, i) => {
       const cmdName = child.getAttribute('data-command');
       child.addEventListener('click', e => {
-        graph.commandEnable(cmdName) && graph.executeCommand(cmdName);
+        return graph.commandCanExecute(cmdName) && graph.executeCommand(cmdName);
       });
     });
   }
 
-  updateToolbar() {
-    const graph = this.get('graph');
-    const parentNode = this.get('container');
-    const children = parentNode.querySelectorAll('div > span[data-command]');
-    each(children, (child, i) => {
-      const cmdName = child.getAttribute('data-command');
-      if (graph.commandEnable(cmdName)) {
-        modifyCSS(child, {
-          cursor: 'pointer'
-        });
-        modifyCSS(child.children[0], {
-          color: '#666'
-        });
-        child.children[0].setAttribute('color', '#666');
-      } else {
-        modifyCSS(child, {
-          cursor: 'default'
-        });
-        modifyCSS(child.children[0], {
-          color: '#bfbfbf'
-        });
-        child.children[0].setAttribute('color', '#bfbfbf');
-      }
-    });
-  }
+  // updateToolbar() {
+  //   const graph = this.get('graph');
+  //   const parentNode = this.get('container');
+  //   const children = parentNode.querySelectorAll('div[data-command]');
+  //   each(children, (child, i) => {
+  //     const cmdName = child.getAttribute('data-command');
+  //     if (graph.commandCanExecute(cmdName)) {
+  //       modifyCSS(child, {
+  //         cursor: 'pointer'
+  //       });
+  //       modifyCSS(child.children[0], {
+  //         color: '#666'
+  //       });
+  //       child.children[0].setAttribute('color', '#666');
+  //     } else {
+  //       modifyCSS(child, {
+  //         cursor: 'pointer'
+  //       });
+  //       console.log(child.children[0]);
+  //       // modifyCSS(child.children[0], {
+  //       //   color: '#bfbfbf'
+  //       // });
+  //       // child.children[0].setAttribute('color', '#bfbfbf');
+  //     }
+  //   });
+  // }
 
   destroyPlugin() {
     this.get('canvas').destroy();

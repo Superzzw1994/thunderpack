@@ -7,8 +7,8 @@ const ToolBar = (props, ref) => {
       name: 123
     }
   }}>
-    <div data-command={'undo'}>撤回</div>
-    <div data-command={'add'}>添加</div>
+    <div className={'tool'} data-command={'undo'}>撤回</div>
+    <div className={'tool'} data-command={'add'}>添加</div>
   </ToolBarsWrapper>;
 };
 

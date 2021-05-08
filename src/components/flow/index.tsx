@@ -4,7 +4,7 @@ import ToolBar from './plugins/ToolBars';
 import Command from './plugins/CommandLifeCycle';
 import { commands, flowProps } from './types';
 
-
+const initCommands = {};
 const Flow: React.FC<flowProps> = (props) => {
   const { height, width, mode, className, getGraph, toolBars, customCommands } = props;
   const [isReady, setIsReady] = useState(false);
@@ -39,6 +39,11 @@ const Flow: React.FC<flowProps> = (props) => {
         height: height || wrapperHeight,
         width: width || wrapperWidth,
         plugins
+      });
+
+      // 根据 mode 不同 初始化对应的commands
+      commandRef.current.initPlugin(graph.current, {
+        ...initCommands
       });
       initGlobalEvents(graph.current);
       setIsReady(true);
