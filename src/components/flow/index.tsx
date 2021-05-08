@@ -85,17 +85,12 @@ const Flow: React.FC<flowProps> = (props) => {
       graph.off('afterCommandExecuted', afterCommandExecuted);
     }
   };
-  const click = () => {
-    graph.current.executeCommand('addNode').then(res => {
-      console.log(res, 'res');
-    });
-  };
   return <Fragment>
     {toolBars && React.cloneElement(toolBars, {
       ref: toolBarRef,
       graph: graph.current
     })}
-    <div className={className} ref={flowRef} onClick={click}></div>
+    <div className={className} ref={flowRef}></div>
   </Fragment>;
 };
 Flow.defaultProps = {

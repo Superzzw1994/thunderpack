@@ -5,7 +5,7 @@ export const initToolBarsCommand: customCommand = {
     name: 'toolBarClick',
     commandDidExecuted(graph, params) {
       console.log(params);
-      return Promise.resolve({});
+      // return Promise.resolve({});
     }
   }
 };

@@ -93,12 +93,12 @@ class Command {
     if (cmd.commandShouldExecute(graph, params)) {
       // emit一个全局事件, 在该command执行前处理一些与该command无关的操作
       graph.emit('beforeCommandExecute', { command: cmd, params });
-      return cmd.commandWillExecute(graph, params).then(res => {
-        return cmd.execute(graph, res);
+      return Promise.resolve(cmd.commandWillExecute(graph, params) || {}).then(res => {
+        return Promise.resolve(cmd.execute(graph, res) || {});
       }).then(res => {
         // emit一个全局事件, 在该command执行结束后处理一些与该command无关的操作
         graph.emit('afterCommandExecuted', { command: cmd, ...res });
-        return cmd.commandDidExecuted(graph, res, cmd);
+        return Promise.resolve(cmd.commandDidExecuted(graph, res, cmd) || {});
       });
     }
   }

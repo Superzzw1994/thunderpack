@@ -9,15 +9,17 @@ export interface flowProps {
   customCommands?: customCommand // 自定义commands
 }
 
+type commandLifeCycle = Promise<Object> | void
+
 export interface command {
   name: string;
   shortcutCodes?: [];
   queue?: boolean;
   executeTimes?: number;
-  commandWillExecute?: (...args) => Promise<Object>;
+  commandWillExecute?: (...args) => commandLifeCycle;
   commandShouldExecute?: (...args) => boolean;
-  execute?: (graph, ...args) => Promise<Object>;
-  commandDidExecuted?: (graph, ...args) => Promise<Object>
+  execute?: (graph, ...args) => commandLifeCycle;
+  commandDidExecuted?: (graph, ...args) => commandLifeCycle
 }
 
 export interface customCommand {
