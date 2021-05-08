@@ -6,9 +6,7 @@ const initCommandProperty = {
   queue: true,
   executeTimes: 1,
   commandWillExecute(graph) {
-    return new Promise((resolve, reject) => {
-      return resolve({});
-    });
+    return Promise.resolve({});
   },
   commandShouldExecute(graph) {
     return true;
@@ -17,10 +15,10 @@ const initCommandProperty = {
     return data;
   },
   commandDidExecuted(graph, data, cmd) {
-    return {
+    return Promise.resolve({
       data,
       cmd
-    };
+    });
   }
 };
 
@@ -64,12 +62,12 @@ class Command {
     };
 
     // 向全局暴露 执行command 的 异步接口 (默认为异步)
-    graph.executeCommand = (name, cfg) => {
+    graph.executeCommand = (name, cfg?: Object) => {
       return this.execute(name, graph, cfg);
     };
 
     // 向全局暴露 执行command 的 同步接口
-    graph.executeCommandSync = (name, cfg) => {
+    graph.executeCommandSync = (name, cfg?: Object) => {
       this.execute(name, graph, cfg);
     };
   }
