@@ -5,18 +5,23 @@ const initCommandProperty = {
   shortcutCodes: [],
   queue: true,
   executeTimes: 1,
-  commandWillExecute(graph) {
-    return Promise.resolve({});
+  commandWillExecute(graph, params = {}) {
+    return Promise.resolve({
+      params,
+      data: {}
+    });
   },
-  commandShouldExecute(graph) {
+  commandShouldExecute(graph, params) {
     return true;
   },
-  execute(graph, data = {}) {
-    return data;
+  execute(graph, res = {}) {
+    return Promise.resolve({
+      ...res
+    });
   },
   commandDidExecuted(graph, data, cmd) {
     return Promise.resolve({
-      data,
+      ...data,
       cmd
     });
   }
@@ -62,13 +67,13 @@ class Command {
     };
 
     // 向全局暴露 执行command 的 异步接口 (默认为异步)
-    graph.executeCommand = (name, cfg?: Object) => {
-      return this.execute(name, graph, cfg);
+    graph.executeCommand = (name, cfg, params) => {
+      return this.execute(name, graph, cfg, params);
     };
 
     // 向全局暴露 执行command 的 同步接口
-    graph.executeCommandSync = (name, cfg?: Object) => {
-      this.execute(name, graph, cfg);
+    graph.executeCommandSync = (name, cfg, params) => {
+      this.execute(name, graph, cfg, params);
     };
   }
 
@@ -82,25 +87,23 @@ class Command {
    *  4. commandDidExecuted ！！！ 这个钩子是封装command的关键，可以在内部执行其他的command，将执行链继续下去
    *
    */
-  execute(name, graph, cfg) {
+  execute(name, graph, cfg, params) {
     const cmd = mix({}, this[name], cfg);
     const manager = this.get('_command');
-    if (cmd.commandShouldExecute(graph)) {
+    if (cmd.commandShouldExecute(graph, params)) {
       // emit一个全局事件, 在该command执行前处理一些与该command无关的操作
-      graph.emit('beforeCommandExecute', { command: cmd });
-      return cmd.commandWillExecute(graph).then(res => {
+      graph.emit('beforeCommandExecute', { command: cmd, params });
+      return cmd.commandWillExecute(graph, params).then(res => {
         return cmd.execute(graph, res);
       }).then(res => {
         // emit一个全局事件, 在该command执行结束后处理一些与该command无关的操作
-        graph.emit('afterCommandExecuted', { command: cmd });
+        graph.emit('afterCommandExecuted', { command: cmd, ...res });
         return cmd.commandDidExecuted(graph, res, cmd);
       });
     }
   }
 
   enable(name, graph) {
-    console.log(name, 'name');
-    console.log(this[name]);
     return this[name] && this[name].commandShouldExecute(graph);
   }
 
@@ -137,7 +140,6 @@ class Command {
 
   initCommands(customCommands) {
     const cmdPlugin = this;
-    console.log(customCommands, 'customCommands');
     // 注册自定义command
     if (customCommands && Object.keys(customCommands).length) {
       Object.keys(customCommands).forEach(command => {

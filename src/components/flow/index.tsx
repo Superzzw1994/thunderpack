@@ -3,8 +3,8 @@ import G6 from '@antv/g6';
 import ToolBar from './plugins/ToolBars';
 import Command from './plugins/CommandLifeCycle';
 import { commands, flowProps } from './types';
+import { initToolBarsCommand } from '../../commons/initCommands';
 
-const initCommands = {};
 const Flow: React.FC<flowProps> = (props) => {
   const { height, width, mode, className, getGraph, toolBars, customCommands } = props;
   const [isReady, setIsReady] = useState(false);
@@ -43,7 +43,7 @@ const Flow: React.FC<flowProps> = (props) => {
 
       // 根据 mode 不同 初始化对应的commands
       commandRef.current.initPlugin(graph.current, {
-        ...initCommands
+        ...initToolBarsCommand
       });
       initGlobalEvents(graph.current);
       setIsReady(true);
@@ -67,9 +67,11 @@ const Flow: React.FC<flowProps> = (props) => {
   }, [customCommands]);
 
   const beforeCommandExecute = (params) => {
+    console.log(params, 'before');
   };
 
   const afterCommandExecuted = (params) => {
+    console.log(params, 'after');
   };
 
   const initGlobalEvents = (graph) => {

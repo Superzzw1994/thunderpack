@@ -16,7 +16,7 @@ export interface command {
   executeTimes?: number;
   commandWillExecute?: (...args) => Promise<Object>;
   commandShouldExecute?: (...args) => boolean;
-  execute: (graph, ...args) => Promise<Object>;
+  execute?: (graph, ...args) => Promise<Object>;
   commandDidExecuted?: (graph, ...args) => Promise<Object>
 }
 
