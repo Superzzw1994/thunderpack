@@ -11,7 +11,6 @@ const Chain = (props) => {
     const isRoot = pre === '';
     const count = getBrotherChildrenCount(list, index);
     const node = calcNodePosition(isRoot, config, combo, count, deep);
-    console.log(cur, node.y);
     const childNodes = (nextList || []).reduce((t, c, index, list) => {
       const children = buildTree(c, {
         ...config, parentNodePosition: {
@@ -63,10 +62,20 @@ const Chain = (props) => {
       ...config
     };
   }, [config]);
-
+  const createEdges = (nodes) => {
+    return (nodes || []).reduce((t, c, index, list) => {
+      const { cur } = c;
+      const target = list.filter(i => parseInt(i.pre) === parseInt(cur));
+      return t.concat(...target.map(i => ({
+        source: cur.toString(),
+        target: i.cur.toString()
+      })));
+    }, []);
+  };
   const _data = useMemo(() => {
     const { topologyNode } = data;
-    const nodes = topologyNode.reduce((t, nodes, index) => {
+    const { nodes, edges } = topologyNode.reduce((t, lists, index) => {
+      const { nodes, edges } = t;
       const config = {
         ...chainConfig,
         originalPoint: {
@@ -74,7 +83,7 @@ const Chain = (props) => {
           y: chainConfig.originalPoint.y + index * chainConfig.rootMargin + currentMaxY.current
         }
       };
-      const currentNode = buildTree(nodes, config, undefined, 0, []);
+      const currentNode = buildTree(lists, config, undefined, 0, []);
       const maxY = currentNode.reduce((t, c, index) => {
         if (index === 0) {
           return c.y;
@@ -83,11 +92,18 @@ const Chain = (props) => {
         }
       }, 0);
       currentMaxY.current = maxY;
-      return t.concat(...currentNode);
-    }, []);
+      return {
+        nodes: nodes.concat(...currentNode),
+        edges: [...edges, ...createEdges(currentNode)]
+      };
+    }, {
+      nodes: [],
+      edges: []
+    });
     // console.log(nodes);
     return {
-      nodes
+      nodes,
+      edges
     };
   }, [data, chainConfig]);
 
