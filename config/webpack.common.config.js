@@ -53,7 +53,14 @@ module.exports = env => {
               loader: 'postcss-loader'
             },
             {
-              loader: 'less-loader'
+              loader: 'less-loader', options: {
+                lessOptions: {
+                  modifyVars: {
+                    'hack': `true; @import "~@chaoswise/ui/config/theme/default.less";`
+                  },
+                  javascriptEnabled: true
+                }
+              }
             }
           ]
         },

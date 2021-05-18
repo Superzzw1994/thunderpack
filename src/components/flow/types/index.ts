@@ -7,8 +7,18 @@ export interface flowProps {
   toolBars?: React.ReactElement; // 工具栏的ReactNode
   wrapperClassName?: string; // 外层的className
   customCommands?: customCommand // 自定义commands
+  data?: flowData,
+  layout?: flowLayout
 }
 
+type flowData = {
+  nodes: [],
+  edges?: [],
+  combos?: []
+}
+type flowLayout = {
+  [key: string]: unknown;
+}
 type commandLifeCycle = Promise<Object> | void
 
 export interface command {
@@ -38,5 +48,12 @@ export interface toolBarsWrapperProps {
   graph?: Object | null;
   detailEnums?: Object;
 
+  [propName: string]: any
+}
+
+export type chainNode = {
+  id: string | number,
+  pre: string | number,
+  nextList: chainNode[],
   [propName: string]: any
 }

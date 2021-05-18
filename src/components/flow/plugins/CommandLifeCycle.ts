@@ -7,7 +7,7 @@ const initCommandProperty = {
   executeTimes: 1,
   commandWillExecute(graph, params = {}) {
     return Promise.resolve({
-      params,
+      ...params,
       data: {}
     });
   },
@@ -67,13 +67,13 @@ class Command {
     };
 
     // 向全局暴露 执行command 的 异步接口 (默认为异步)
-    graph.executeCommand = (name, cfg, params) => {
+    graph.executeCommand = (name, cfg?: object, params?: object) => {
       return this.execute(name, graph, cfg, params);
     };
 
     // 向全局暴露 执行command 的 同步接口
-    graph.executeCommandSync = (name, cfg, params) => {
-      this.execute(name, graph, cfg, params);
+    graph.executeCommandSync = (name, cfg?: object, params?: object) => {
+      this.execute(name, graph, cfg = {}, params = {});
     };
   }
 

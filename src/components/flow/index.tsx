@@ -4,9 +4,11 @@ import ToolBar from './plugins/ToolBars';
 import Command from './plugins/CommandLifeCycle';
 import { commands, flowProps } from './types';
 import { initToolBarsCommand } from '../../commons/initCommands';
+import registerLayout from './layouts';
+import registerShape from './shape';
 
 const Flow: React.FC<flowProps> = (props) => {
-  const { height, width, mode, className, getGraph, toolBars, customCommands } = props;
+  const { height, width, mode, className, getGraph, toolBars, customCommands, layout, data } = props;
   const [isReady, setIsReady] = useState(false);
   const toolBarRef = useRef(null);
   const graph = useRef(null as any);
@@ -14,6 +16,8 @@ const Flow: React.FC<flowProps> = (props) => {
   const commandRef = useRef<commands>({} as commands);
   useEffect(() => {
     if (!graph.current) {
+      registerLayout(G6);
+      registerShape(G6);
       let plugins: {}[] = [];
 
       // 初始化 Command系统实例, 并保存到ref中, 保留在 数据更新或用户传入customCommands 时增加系统command的能力(通过在useEffect监听的变量更新时调用initPlugin实现)
@@ -28,17 +32,46 @@ const Flow: React.FC<flowProps> = (props) => {
         });
         plugins.push(toolbar);
       }
-
-
+      // const fisheye = new G6.Fisheye({
+      //   trigger: 'mousemove',
+      //   d: 1.5,
+      //   r: 200,
+      //   maxD: 10,
+      //   showLabel: true,
+      //   showDPercent: false,
+      //   scaleDBy: 'drag'
+      // });
+      // console.log(fisheye);
+      // plugins.push(fisheye);
       // 继承父元素的宽高
       const wrapperWidth = flowRef.current.offsetWidth;
       const wrapperHeight = flowRef.current.offsetHeight;
+      // 注册Layout
 
       graph.current = new G6.Graph({
         container: flowRef.current,
         height: height || wrapperHeight,
         width: width || wrapperWidth,
-        plugins
+        plugins,
+        modes: {
+          default: ['drag-canvas']
+        },
+        // layout,
+        defaultNode: {
+          type: 'baseNode'
+        }
+        // defaultEdge: {
+        //   type: 'polyline',
+        //   size: 1,
+        //   color: '#e2e2e2',
+        //   style: {
+        //     endArrow: {
+        //       path: 'M 0,0 L 8,4 L 8,-4 Z',
+        //       fill: '#e2e2e2'
+        //     },
+        //     radius: 20
+        //   }
+        // }
       });
 
       // 根据 mode 不同 初始化对应的commands
@@ -46,6 +79,8 @@ const Flow: React.FC<flowProps> = (props) => {
         ...initToolBarsCommand
       });
       initGlobalEvents(graph.current);
+      graph.current.data(data);
+      graph.current.render();
       setIsReady(true);
     }
     return () => {
@@ -67,11 +102,9 @@ const Flow: React.FC<flowProps> = (props) => {
   }, [customCommands]);
 
   const beforeCommandExecute = (params) => {
-    console.log(params, 'before');
   };
 
   const afterCommandExecuted = (params) => {
-    console.log(params, 'after');
   };
 
   const initGlobalEvents = (graph) => {
@@ -90,10 +123,12 @@ const Flow: React.FC<flowProps> = (props) => {
       ref: toolBarRef,
       graph: graph.current
     })}
+    <div className={'sideBar'}>SideBar</div>
     <div className={className} ref={flowRef}></div>
   </Fragment>;
 };
 Flow.defaultProps = {
-  mode: 'edit'
+  mode: 'edit',
+  layout: {}
 };
 export default Flow;

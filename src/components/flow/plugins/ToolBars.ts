@@ -48,7 +48,7 @@ class Toolbar {
       const cmdName = child.getAttribute('data-command');
       const cmdDetail = child.getAttribute('data-detail');
       child.addEventListener('click', e => {
-        return graph.commandCanExecute('toolBarClick') && graph.executeCommand('toolBarClick', graph, {
+        return graph.commandCanExecute('toolBarClick') && graph.executeCommand('toolBarClick', {}, {
           currentItem: {
             key: cmdName,
             values: JSON.parse(cmdDetail)
