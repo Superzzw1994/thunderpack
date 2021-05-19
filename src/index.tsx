@@ -147,8 +147,8 @@ const data = {
 };
 const config = {
   originalPoint: {
-    x: 0,
-    y: 0
+    x: 200,
+    y: 200
   },
   nodeSepFunc: () => 100,
   rankSepFunc: () => 100,

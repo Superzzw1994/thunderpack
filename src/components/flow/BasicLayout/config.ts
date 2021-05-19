@@ -14,5 +14,4 @@ export const baseConfig = {
     height: 100
   },
   rootMargin: 100
-
 };
