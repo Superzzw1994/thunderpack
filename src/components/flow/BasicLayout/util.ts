@@ -23,7 +23,7 @@ export const getBrotherChildrenCount = (nodes: chainNode[], i) => nodes.reduce((
   }
 }, 0);
 
-export const generateAnchorPoint = ({ isRoot, config, node, count, deep }) => {
+export const generateAnchorPoint = ({ node }) => {
   const { pre, nextList } = node;
   const { forward, back } = {
     forward: !!(nextList && nextList.length),
@@ -34,10 +34,8 @@ export const generateAnchorPoint = ({ isRoot, config, node, count, deep }) => {
     forward && [1, 0.5] // 右侧中间
   ].filter(Boolean);
   return {
-    isRoot, config, node: {
-      ...node,
-      anchorPoints
-    }, count, deep
+    ...node,
+    anchorPoints
   };
 };
 
@@ -71,5 +69,5 @@ export const generateNodeSize = ({ isRoot, config, node, count, deep }) => {
 
 export const calcNodePosition = (isRoot, config, node, count, deep) => compose([generateAnchorPoint, generateNodePosition, generateNodeSize])({
   isRoot, config, node, count, deep
-}).node;
+});
 

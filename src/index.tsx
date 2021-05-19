@@ -152,6 +152,17 @@ const Root = () => {
         defaultNode={{
           type: 'callChainNode'
         }}
+        defaultEdge={{
+          type: 'polyline',
+          style: {
+            offset: 50,  // 拐弯处距离节点最小距离
+            radius: 10,  // 拐弯处的圆角弧度，若不设置则为直角
+            lineWidth: 2,
+            stroke: '#A7B8C9'
+          }
+          // controlPoints: [{ x: 10, y: 20 }, { x: 20, y: 25 }]
+          // 其他配置
+        }}
         registerCustomNode={initChainNode}
         data={data}
         config={config}
