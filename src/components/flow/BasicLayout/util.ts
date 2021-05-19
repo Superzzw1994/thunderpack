@@ -1,29 +1,9 @@
 import { chainNode } from '../types';
 
-export const calcNodePosition = (isRoot, config, combo,count,deep,) => {
-  const { pre, nextList = [], next, cur } = combo;
-  const { originalPoint, nodeSize, nodeSepFunc, rankSepFunc, parentNodePosition, padding } = config;
-  return isRoot ? {
-    ...combo,
-    x: originalPoint.x + padding.x,
-    y: originalPoint.y + padding.y,
-    parentId: pre
-  } : {
-    ...combo,
-    x: (originalPoint.x + padding.x) + (deep * (nodeSize.width + nodeSepFunc())),
-    y: (parentNodePosition ? parentNodePosition.y : padding.y) + count * ((rankSepFunc() + nodeSize.height)),
-    parentId: pre
-  };
-};
+const compose = (operator) => operator.reduce((t, c) => {
+  return (...args) => t(c(...args));
+});
 
-
-export const getBrotherChildrenCount = (nodes: chainNode[], i) => nodes.reduce((t, c, index) => {
-  if (index < i) {
-    return t + getLength(c);
-  } else {
-    return t;
-  }
-}, 0);
 const getLength = (node) => {
   const { nextList } = node;
   // const baseLength = nextList && nextList.length ? nextList.length : 0;
@@ -34,3 +14,58 @@ const getLength = (node) => {
   }, 0);
   return childrenLength > baseLength ? childrenLength : baseLength;
 };
+
+export const getBrotherChildrenCount = (nodes: chainNode[], i) => nodes.reduce((t, c, index) => {
+  if (index < i) {
+    return t + getLength(c);
+  } else {
+    return t;
+  }
+}, 0);
+
+export const generateAnchorPoint = ({ isRoot, config, node, count, deep }) => {
+  const { pre, nextList } = node;
+  const anchors = {
+    forward: !!(nextList && nextList.length),
+    back: pre === 0 ? true : !!pre
+  };
+  return {
+    isRoot, config, node: {
+      ...node,
+      anchors
+    }, count, deep
+  };
+};
+
+export const generateNodePosition = ({ isRoot, config, node, count, deep }) => {
+  const { originalPoint, nodeSize, nodeSepFunc, rankSepFunc, parentNodePosition, padding } = config;
+  const y = (parentNodePosition ? parentNodePosition.y : padding.y) + count * ((rankSepFunc() + nodeSize.height));
+  const x = (originalPoint.x + padding.x) + (deep * (nodeSize.width + nodeSepFunc()));
+  const rootX = originalPoint.x + padding.x;
+  const rootY = originalPoint.y + padding.y;
+  const _node = {
+    ...node,
+    x: isRoot ? rootX : x,
+    y: isRoot ? rootY : y
+  };
+  return {
+    isRoot, config, node: _node, count, deep
+  };
+};
+
+export const generateNodeSize = ({ isRoot, config, node, count, deep }) => {
+  const { nodeSize } = config;
+  const _node = {
+    ...node,
+    width: nodeSize.width,
+    height: nodeSize.height
+  };
+  return {
+    isRoot, config, node: _node, count, deep
+  };
+};
+
+export const calcNodePosition = (isRoot, config, node, count, deep) => compose([generateAnchorPoint, generateNodePosition, generateNodeSize])({
+  isRoot, config, node, count, deep
+}).node;
+

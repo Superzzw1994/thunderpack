@@ -1,7 +1,7 @@
 export const baseConfig = {
   padding: {
-    x: 100,
-    y: 100
+    x: 0,
+    y: 0
   },
   originalPoint: {
     x: 0,

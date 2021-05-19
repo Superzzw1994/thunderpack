@@ -1,31 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
-import Flow from './components/flow';
 import ToolBar from './ToolBar';
 import './index.less';
 import Chain from './components/flow/BasicLayout/Chain';
+import initChainNode from './config';
 
-const customCommands = {
-  addNode: {
-    name: 'addNode',
-    commandShouldExecute(graph) {
-      return true;
-    },
-    // commandWillExecute(graph) {
-    //   return new Promise<Object>((resolve, reject) => {
-    //     return resolve({
-    //       age: 18
-    //     });
-    //   });
-    // },
-    execute: (graph, data: Object) => {
-      return Promise.resolve({
-        age: 18,
-        ...data
-      });
-    }
-  }
-};
+const customCommands = {};
 const data = {
   'topologyNode': [{
     'root': 'A',
@@ -147,14 +127,14 @@ const data = {
 };
 const config = {
   originalPoint: {
-    x: 200,
-    y: 200
+    x: 10,
+    y: 10
   },
-  nodeSepFunc: () => 100,
-  rankSepFunc: () => 100,
+  nodeSepFunc: () => 150,
+  rankSepFunc: () => 20,
   nodeSize: {
-    width: 100,
-    height: 100
+    width: 150,
+    height: 70
   },
   rootMargin: 200
 };
@@ -165,12 +145,22 @@ const Root = () => {
   };
   return (
     <div className={'rootWrapper'}>
-      <Chain data={data} config={config}>
-        <Flow className={'flowWrapper'}
-              getGraph={getGraph}
-              customCommands={customCommands}
-              toolBars={<ToolBar />} />
-      </Chain>
+      <Chain
+        modes={{
+          default: ['drag-canvas']
+        }}
+        defaultNode={{
+          type: 'callChainNode'
+        }}
+        registerCustomNode={initChainNode}
+        data={data}
+        config={config}
+        customCommands={customCommands}
+        toolBars={<ToolBar />}
+        flowClassName={'flowWrapper'}
+        getGraph={getGraph}
+        graph={graph}
+      />
     </div>
   );
 };

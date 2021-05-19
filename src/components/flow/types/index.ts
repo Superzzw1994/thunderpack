@@ -2,13 +2,16 @@ export interface flowProps {
   className?: string; // 容器类名
   height?: number; // 画布高度
   width?: number | string; // 画布宽度
-  mode?: 'default' | 'view' | 'edit'; // 画布模式
+  modes?: {
+    [propName: string]: string[]
+  }; // 画布模式
   getGraph?: (graph: Object) => void; // 获取 graph 实例的函数
   toolBars?: React.ReactElement; // 工具栏的ReactNode
   wrapperClassName?: string; // 外层的className
   customCommands?: customCommand // 自定义commands
   data?: flowData,
-  layout?: flowLayout
+  layout?: flowLayout,
+  registerCustomNode?: (G6) => void
 }
 
 type flowData = {
@@ -57,3 +60,5 @@ export type chainNode = {
   nextList: chainNode[],
   [propName: string]: any
 }
+
+export type graphBaseConfig = Partial<flowProps>

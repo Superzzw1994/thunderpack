@@ -2,9 +2,10 @@ import React, { useMemo, useRef } from 'react';
 import { chainNode } from '../types';
 import { baseConfig } from './config';
 import { getBrotherChildrenCount, calcNodePosition } from './util';
+import Flow from '../index';
 
 const Chain = (props) => {
-  const { data, layout, config } = props;
+  const { data, config, flowClassName, graph, ...rest } = props;
   const currentMaxY = useRef(0);
   const buildTree = (combo: chainNode, config, index = 0, deep, list) => {
     const { pre, nextList = [], cur } = combo;
@@ -29,33 +30,6 @@ const Chain = (props) => {
       heightNum: childNodes ? childNodes.length : 0
     }, ...childNodes];
   };
-  // const calcNodePosition = (nodes: chainNode[], config, allNode: chainNode[]) => {
-  //
-  //   const { originalPoint, nodeSize, nodeSepFunc, rankSepFunc, parentPosition = undefined } = config;
-  //
-  //   return (nodes || []).reduce((t, node: chainNode, index, list: chainNode[]) => {
-  //
-  //     const { isRoot, nextList, level, pre, parentPosition, cur } = node;
-  //
-  //     const currentNode = list.find(item => parseInt(item.id as string) === cur);
-  //
-  //     const parentNode: chainNode | undefined = list.find(item => parseInt(item.id as string) === pre);
-  //
-  //     const _node = isRoot ? {
-  //       ...node as object,
-  //       ...originalPoint
-  //     } : node;
-  //     console.log(_node);
-  //     const res = nextList && nextList.length ? calcNodePosition(nextList, Object.assign({}, config, {
-  //       parentPosition: {
-  //         x: _node.x,
-  //         y: _node.y
-  //       }
-  //     }), nodes) : [];
-  //     return t.concat(...res);
-  //   }, []);
-  // };
-
   const chainConfig = useMemo(() => {
     return {
       ...baseConfig,
@@ -80,7 +54,7 @@ const Chain = (props) => {
         ...chainConfig,
         originalPoint: {
           x: chainConfig.originalPoint.x,
-          y: chainConfig.originalPoint.y + index * chainConfig.rootMargin + currentMaxY.current
+          y: index === 0 ? chainConfig.originalPoint.y : chainConfig.rootMargin + currentMaxY.current
         }
       };
       const currentNode = buildTree(lists, config, undefined, 0, []);
@@ -106,22 +80,11 @@ const Chain = (props) => {
       edges
     };
   }, [data, chainConfig]);
-
-
-  // const newData = useMemo(() => {
-  //   const { originalPoint, nodeSize, nodeSepFunc, rankSepFunc } = chainConfig;
-  //   const { nodes } = _data;
-  //   return calcNodePosition(nodes, chainConfig, nodes);
-  // }, [_data, chainConfig]);
-
-  return <React.Fragment>
-    {React.Children.map(props.children, (child) => {
-      return React.cloneElement(child, {
-        data: _data,
-        layout
-      });
-    })}
-  </React.Fragment>;
+  return <Flow
+    className={flowClassName}
+    data={_data}
+    {...rest}
+  />;
 };
 
 export default Chain;
