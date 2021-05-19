@@ -25,14 +25,18 @@ export const getBrotherChildrenCount = (nodes: chainNode[], i) => nodes.reduce((
 
 export const generateAnchorPoint = ({ isRoot, config, node, count, deep }) => {
   const { pre, nextList } = node;
-  const anchors = {
+  const { forward, back } = {
     forward: !!(nextList && nextList.length),
     back: pre === 0 ? true : !!pre
   };
+  const anchorPoints = [
+    back && [0, 0.5], // 左侧中间
+    forward && [1, 0.5] // 右侧中间
+  ].filter(Boolean);
   return {
     isRoot, config, node: {
       ...node,
-      anchors
+      anchorPoints
     }, count, deep
   };
 };
