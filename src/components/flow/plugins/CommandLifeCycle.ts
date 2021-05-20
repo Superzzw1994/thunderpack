@@ -5,14 +5,15 @@ const initCommandProperty = {
   shortcutCodes: [],
   queue: true,
   executeTimes: 1,
+  canExecute: true,
   commandWillExecute(graph, params = {}) {
     return Promise.resolve({
       ...params,
       data: {}
     });
   },
-  commandShouldExecute(graph, params) {
-    return true;
+  commandShouldExecute(graph) {
+    return this.canExecute;
   },
   execute(graph, res = {}) {
     return Promise.resolve({
@@ -57,13 +58,13 @@ class Command {
     this.initCommands(customCommands);
 
     // 向全局暴露 获取当前全部commands 的接口
-    graph.getCommands = () => {
-      return this.get('_command').queue;
+    graph.getCommands = (name) => {
+      return this[name];
     };
 
     // 向全局暴露 获取customCommand是否可以执行 的接口
-    graph.commandCanExecute = (name) => {
-      return this.enable(name, graph);
+    graph.commandCanExecute = (name, canExecute) => {
+      return this.enable(name, graph, canExecute);
     };
 
     // 向全局暴露 执行command 的 异步接口 (默认为异步)
@@ -103,8 +104,10 @@ class Command {
     }
   }
 
-  enable(name, graph) {
-    return this[name] && this[name].commandShouldExecute(graph);
+  enable(name, graph, canExecute) {
+    if (this[name]) {
+      this[name].canExecute = canExecute;
+    }
   }
 
   destroyPlugin() {

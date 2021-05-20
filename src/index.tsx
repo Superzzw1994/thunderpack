@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
 import ToolBar from './ToolBar';
 import SideBar from './SideBar';
@@ -6,7 +6,22 @@ import './index.less';
 import initChainNode from './config';
 import { Chain, G6, InitToolbarPlugin } from './components/flow/index';
 
-const customCommands = {};
+const customCommands = {
+  onNodeClick: {
+    name: 'onNodeClick',
+    execute(graph, params) {
+      const { event } = params;
+      const shape = event.target;
+      const node = event.item;
+      console.log(data);
+      return {
+        shape,
+        node,
+        ...params
+      };
+    }
+  }
+};
 const data = {
   'topologyNode': [{
     'root': 'A',
@@ -146,6 +161,23 @@ const Root = () => {
   const getGraph = (graph: Object) => {
     setGraph(graph);
   };
+  const commands = useMemo(() => {
+    return (data) => ({
+      onNodeClick: {
+        name: 'onNodeClick',
+        execute(graph, params) {
+          const { event } = params;
+          const shape = event.target;
+          const node = event.item;
+          return {
+            shape,
+            node,
+            ...params
+          };
+        }
+      }
+    });
+  }, [data]);
   return (
     <div className={'rootWrapper'}>
       <Chain
@@ -169,7 +201,7 @@ const Root = () => {
         registerCustomNode={initChainNode}
         data={data}
         config={config}
-        customCommands={customCommands}
+        customCommands={commands(data)}
         toolBars={<ToolBar />}
         sideBar={<SideBar />}
         flowClassName={'flowWrapper'}

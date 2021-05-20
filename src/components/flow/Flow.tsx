@@ -3,7 +3,7 @@ import G6 from '@antv/g6';
 import InitToolbarPlugin from './plugins/InitToolBarPlugin';
 import Command from './plugins/CommandLifeCycle';
 import { commands, flowProps, graphBaseConfig } from './types';
-import { initToolBarsCommand } from '../../commons/initCommands';
+import { initToolBarsCommand } from './commons/initCommands';
 import registerLayout from './layouts';
 import registerShape from './shape';
 import { mix, clone, isString } from '@antv/util';
@@ -89,9 +89,11 @@ const Flow: React.FC<flowProps> = (props) => {
       graph.current.data(data);
       graph.current.render();
       setIsReady(true);
+      bindEvents(graph.current);
     }
     return () => {
       unbindGlobalEvents(graph.current);
+      unbindEvents(graph.current);
       graph.current = null;
     };
   }, []);
@@ -112,6 +114,37 @@ const Flow: React.FC<flowProps> = (props) => {
       registerCustomNode(G6);
     }
   }, [registerCustomNode]);
+  const emitEvent = (type, event) => {
+    graph.current.executeCommand(type, {}, {
+      event
+    });
+  };
+  const bindEvents = (graph) => {
+    graph.on('node:click', emitEvent.bind(this, 'onNodeClick'));
+    graph.on('node:dblclick', emitEvent.bind(this, 'onNodeDoubleClick'));
+    // graph.on('canvas:click', canvasClick);
+    // graph.on('addNode', addNode);
+    // graph.on('node:mouseleave', nodeMouseLeave);
+    // graph.on('node:mouseover', nodeMouseOver);
+    // graph.on('dragLineMoving', dragLineMoving);
+    // graph.on('keydown', keyDown);
+    // graph.on('addEdge', addEdge);
+    // graph.on('edge:click', edgeClick);
+    // graph.on('edge:dblclick', edgeDoubleClick);
+  };
+  const unbindEvents = (graph) => {
+    graph.on('node:click', emitEvent);
+    // graph.on('node:dblclick', nodeDoubleClick);
+    // graph.on('canvas:click', canvasClick);
+    // graph.on('addNode', addNode);
+    // graph.on('node:mouseleave', nodeMouseLeave);
+    // graph.on('node:mouseover', nodeMouseOver);
+    // graph.on('dragLineMoving', dragLineMoving);
+    // graph.on('keydown', keyDown);
+    // graph.on('addEdge', addEdge);
+    // graph.on('edge:click', edgeClick);
+    // graph.on('edge:dblclick', edgeDoubleClick);
+  };
   const beforeCommandExecute = (params) => {
   };
 

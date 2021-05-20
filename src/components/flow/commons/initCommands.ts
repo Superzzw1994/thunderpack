@@ -1,4 +1,4 @@
-import { customCommand } from '../components/flow/types';
+import { customCommand } from '../types';
 
 export const initToolBarsCommand: customCommand = {
   toolBarClick: {
@@ -39,6 +39,59 @@ export const initToolBarsCommand: customCommand = {
     execute(graph, params) {
       graph.zoomTo(1);
       graph.fitView();
+      // graph.moveTo(100, 100);
+    }
+  },
+  onNodeClick: {
+    name: 'onNodeClick',
+    execute(graph, params) {
+      const { event } = params;
+      const shape = event.target;
+      const node = event.item;
+      return {
+        shape,
+        node,
+        ...params
+      };
+    }
+  },
+  onNodeDoubleClick: {
+    name: 'onNodeDoubleClick',
+    commandWillExecute(graph, params = {}) {
+      return params;
+    },
+    execute(graph, params) {
+      const { event } = params;
+      const shape = event.target;
+      const node = event.item;
+      return {
+        shape,
+        node,
+        ...params
+      };
+    },
+    commandDidExecuted(graph, data, cmd) {
+    }
+  },
+  onCanvasClick: {
+    name: 'onCanvasClick',
+    execute(graph, params) {
+      const { event } = params;
+      const shape = event.target;
+      const node = event.item;
+      // console.log(shape);
+      // console.log(node);
+      // graph.moveTo(100, 100);
+    }
+  },
+  onCanvasDoubleClick: {
+    name: 'onCanvasDoubleClick',
+    execute(graph, params) {
+      const { event } = params;
+      const shape = event.target;
+      const node = event.item;
+      // console.log(shape);
+      // console.log(node);
       // graph.moveTo(100, 100);
     }
   }
