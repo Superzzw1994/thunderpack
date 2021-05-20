@@ -2,7 +2,7 @@ import React, { useMemo, useRef } from 'react';
 import { chainNode } from '../types';
 import { baseConfig } from './config';
 import { getBrotherChildrenCount, calcNodePosition } from './util';
-import Flow from '../index';
+import Flow from '../Flow';
 
 const Chain = (props) => {
   const { data, config, flowClassName, graph, ...rest } = props;
@@ -23,11 +23,9 @@ const Chain = (props) => {
     }, []);
     return [{
       ...node,
-      level: index,
       id: `${cur}`,
       isRoot,
-      deep,
-      heightNum: childNodes ? childNodes.length : 0
+      deep
     }, ...childNodes];
   };
   const chainConfig = useMemo(() => {

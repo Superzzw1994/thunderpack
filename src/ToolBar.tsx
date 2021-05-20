@@ -1,9 +1,9 @@
 import React, { forwardRef, PropsWithChildren } from 'react';
-import ToolBarsWrapper from './components/flow/components/ToolBarsWrapper';
+import PluginWrapper from './components/flow/components/PluginWrapper';
 import { Icon, Tooltip } from '@chaoswise/ui';
 
 const ToolBar = (props, ref) => {
-  return <ToolBarsWrapper name={'zzw'} className={'toolBars'} ref={ref} detailEnums={{
+  return <PluginWrapper className={'toolBars'} ref={ref} detailEnums={{
     zoomIn: {
       type: 'original',
       multiple: 1.2,
@@ -18,7 +18,7 @@ const ToolBar = (props, ref) => {
     <div className={'tool'} data-command={'zoomIn'}><Tooltip title={'放大'}><Icon type='zoom-in' /></Tooltip></div>
     <div className={'tool'} data-command={'zoomOut'}><Tooltip title={'缩小'}><Icon type='zoom-out' /></Tooltip></div>
     <div className={'tool'} data-command={'resetZoom'}><Tooltip title={'复位'}><Icon type='redo' /></Tooltip></div>
-  </ToolBarsWrapper>;
+  </PluginWrapper>;
 };
 
 export default forwardRef<any, PropsWithChildren<object>>(ToolBar);

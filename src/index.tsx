@@ -1,9 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
 import ToolBar from './ToolBar';
+import SideBar from './SideBar';
 import './index.less';
-import Chain from './components/flow/BasicLayout/Chain';
 import initChainNode from './config';
+import { Chain, G6, InitToolbarPlugin } from './components/flow/index';
 
 const customCommands = {};
 const data = {
@@ -138,6 +139,8 @@ const config = {
   },
   rootMargin: 200
 };
+
+
 const Root = () => {
   const [graph, setGraph] = useState<Object | null>(null);
   const getGraph = (graph: Object) => {
@@ -153,10 +156,10 @@ const Root = () => {
           type: 'callChainNode'
         }}
         defaultEdge={{
-          type: 'polyline',
+          type: 'cubic-horizontal',
           style: {
-            offset: 50,  // 拐弯处距离节点最小距离
-            radius: 10,  // 拐弯处的圆角弧度，若不设置则为直角
+            // offset: 50,  // 拐弯处距离节点最小距离
+            // radius: 10,  // 拐弯处的圆角弧度，若不设置则为直角
             lineWidth: 2,
             stroke: '#A7B8C9'
           }
@@ -168,6 +171,7 @@ const Root = () => {
         config={config}
         customCommands={customCommands}
         toolBars={<ToolBar />}
+        sideBar={<SideBar />}
         flowClassName={'flowWrapper'}
         getGraph={getGraph}
         graph={graph}

@@ -48,7 +48,6 @@ const initChainNode = (G6) => {
     // },
     draw(cfg, group) {
       const { width, height, cur, nodeName, serviceId, healthScore, anchors, isRoot } = cfg;
-      console.log(isRoot, cur, anchors, 'anchors');
       const shape = group.addShape('rect', {
         attrs: {
           width,

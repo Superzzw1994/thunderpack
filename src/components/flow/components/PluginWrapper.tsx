@@ -1,7 +1,7 @@
-import React, { forwardRef, PropsWithChildren, useEffect, useImperativeHandle, useRef } from 'react';
+import React, { forwardRef, PropsWithChildren } from 'react';
 import { toolBarsWrapperProps } from '../types';
 
-const ToolBarsWrapper = (props, ref) => {
+const PluginWrapper = (props, ref) => {
   const { children, className, graph, detailEnums } = props;
   return <div className={className} ref={ref}>
     {
@@ -19,4 +19,4 @@ const ToolBarsWrapper = (props, ref) => {
   </div>;
 };
 
-export default forwardRef<any, PropsWithChildren<toolBarsWrapperProps>>(ToolBarsWrapper);
+export default forwardRef<any, PropsWithChildren<toolBarsWrapperProps>>(PluginWrapper);

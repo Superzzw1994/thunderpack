@@ -7,11 +7,14 @@ export interface flowProps {
   }; // 画布模式
   getGraph?: (graph: Object) => void; // 获取 graph 实例的函数
   toolBars?: React.ReactElement; // 工具栏的ReactNode
+  sideBar?: React.ReactElement; // 侧边栏的ReactNode
   wrapperClassName?: string; // 外层的className
   customCommands?: customCommand // 自定义commands
   data?: flowData,
   layout?: flowLayout,
-  registerCustomNode?: (G6) => void
+  registerCustomNode?: (G6) => void,
+
+  [propName: string]: any
 }
 
 type flowData = {

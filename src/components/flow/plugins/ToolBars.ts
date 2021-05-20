@@ -1,7 +1,7 @@
 import { deepMix, each, wrapBehavior } from '@antv/util';
 import { modifyCSS } from '@antv/dom-util';
 
-class Toolbar {
+class InitToolbarPlugin {
   private readonly _cfgs: any;
   private _events: any;
 
@@ -24,25 +24,23 @@ class Toolbar {
   initPlugin(graph: any) {
     const self = this;
     this.set('graph', graph);
-    const events = self.getEvents();
-    const bindEvents = {};
-    each(events, (v, k) => {
-      const event = wrapBehavior(self, v);
-      bindEvents[k] = event;
-      graph.on(k, event);
-    });
-    this._events = bindEvents;
+    // const events = self.getEvents();
+    // const bindEvents = {};
+    // each(events, (v, k) => {
+    //   const event = wrapBehavior(self, v);
+    //   bindEvents[k] = event;
+    //   graph.on(k, event);
+    // });
+    // this._events = bindEvents;
     this.initEvents();
     // this.updateToolbar();
   }
 
   getEvents() {
-    return { afterItemSelected: 'updateToolbar', afterCommandexecuted: 'updateToolbar' };
+    return { afterItemSelected: 'updateToolbar', afterCommandExecuted: 'updateToolbar' };
   }
 
-  initEvents() {
-    const graph = this.get('graph');
-    const parentNode = this.get('container');
+  bindEvents(graph, parentNode) {
     const children = parentNode.querySelectorAll('div[data-command]');
     each(children, (child, i) => {
       const cmdName = child.getAttribute('data-command');
@@ -57,6 +55,11 @@ class Toolbar {
       });
     });
   }
+  initEvents() {
+    const graph = this.get('graph');
+    const parentNode = this.get('container');
+    this.bindEvents(graph, parentNode);
+  }
 
   destroyPlugin() {
     this.get('canvas').destroy();
@@ -65,4 +68,4 @@ class Toolbar {
   }
 }
 
-export default Toolbar;
+export default InitToolbarPlugin;
