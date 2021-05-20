@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState, Fragment } from 'react';
 import G6 from '@antv/g6';
-import InitToolbarPlugin from './plugins/ToolBars';
+import InitToolbarPlugin from './plugins/InitToolBarPlugin';
 import Command from './plugins/CommandLifeCycle';
 import { commands, flowProps, graphBaseConfig } from './types';
 import { initToolBarsCommand } from '../../commons/initCommands';
