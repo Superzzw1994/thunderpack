@@ -6,22 +6,6 @@ import './index.less';
 import initChainNode from './config';
 import { Chain, G6, InitToolbarPlugin } from './components/flow/index';
 
-const customCommands = {
-  onNodeClick: {
-    name: 'onNodeClick',
-    execute(graph, params) {
-      const { event } = params;
-      const shape = event.target;
-      const node = event.item;
-      console.log(data);
-      return {
-        shape,
-        node,
-        ...params
-      };
-    }
-  }
-};
 const data = {
   'topologyNode': [{
     'root': 'A',
@@ -157,11 +141,107 @@ const config = {
 
 const Root = () => {
   const [graph, setGraph] = useState<Object | null>(null);
+  const selectNodesIdList = useRef<{}>({
+    selected: [],
+    hover: []
+  });
   const getGraph = (graph: Object) => {
     setGraph(graph);
   };
   const commands = useMemo(() => {
-    return (data) => customCommands;
+    return (data) => ({
+      onNodeClick: {
+        name: 'onNodeClick',
+        execute(graph, params) {
+          changeNodeState(graph, params, 'selected');
+        }
+      },
+      onNodeDoubleClick: {
+        name: 'onNodeDoubleClick',
+        execute(graph, params) {
+          nodeDoubleClick(graph, params);
+        }
+      },
+      onNodeMouseOver: {
+        name: 'onNodeMouseOver',
+        execute(graph, params) {
+          changeNodeState(graph, params, 'hover');
+        }
+      },
+      onNodeMouseLeave: {
+        name: 'onNodeMouseLeave',
+        execute(graph) {
+          cancelSelected(graph, 'hover');
+        }
+      },
+      onCanvasClick: {
+        name: 'onCanvasClick',
+        execute(graph) {
+          cancelSelected(graph, 'selected');
+        }
+      }
+    });
+  }, [data]);
+  const nodeDoubleClick = (graph, params) => {
+    const { event } = params;
+    const node = event.item;
+    const selectedNodes = graph.findAllByState('node', 'selected');
+    const selectedEdges = graph.findAllByState('edge', 'selected');
+    const hoverNodes = graph.findAllByState('node', 'hover');
+    const hoverEdges = graph.findAllByState('edge', 'hover');
+    [...selectedNodes, ...hoverNodes, ...selectedEdges, ...hoverEdges].filter(Boolean).forEach(item => {
+      graph.setItemState(item, 'hover', false);
+      graph.setItemState(item, 'selected', false);
+    });
+    graph.setItemState(node, 'selected', true);
+  };
+  const changeNodeState = (graph, params, type) => {
+    const { event } = params;
+    const node = event.item;
+    const idList = getChain(node._cfg.model);
+    selectNodesIdList.current[type] = idList;
+    const hasSelected = node.hasState(type);
+    idList.forEach(id => {
+      const edges = graph.findById(id.toString()).getInEdges();
+      edges.forEach(edge => {
+        graph.setItemState(edge, type, !hasSelected);
+      });
+      graph.setItemState(id.toString(), type, !hasSelected);
+    });
+  };
+  const cancelSelected = (graph, type) => {
+    const selectedNodes = graph.findAllByState('node', 'selected');
+    (selectNodesIdList.current[type].concat(...selectedNodes.map(node => node._cfg.id))).filter(Boolean).forEach(id => {
+      const edges = graph.findById(id.toString()).getInEdges();
+      edges.forEach(edge => {
+        graph.setItemState(edge, type, false);
+      });
+      graph.setItemState(id.toString(), type, false);
+    });
+    selectNodesIdList.current[type] = [];
+  };
+  const getChain = (node) => {
+    const parent = node.parentList;
+    const child = returnChildId(node.nextList);
+    return [...parent, node.cur, ...child];
+  };
+  const returnChildId = (list) => list.reduce((t, c) => {
+    const { nextList, cur } = c;
+    const res = returnChildId(nextList || []);
+    return t.concat(cur, ...res);
+  }, []);
+  const filterCondition = (node) => node;
+  const handleData = (node, parentList, filterCondition) => {
+    const { nextList = [], cur } = node;
+    const _nextList = (nextList || []).map(list => handleData(list, parentList.concat(cur.toString()), filterCondition));
+    return {
+      ...node,
+      nextList: _nextList,
+      parentList
+    };
+  };
+  const _data = useMemo(() => {
+    return data.topologyNode.map(i => handleData(i, [], filterCondition));
   }, [data]);
   return (
     <div className={'rootWrapper'}>
@@ -173,18 +253,11 @@ const Root = () => {
           type: 'callChainNode'
         }}
         defaultEdge={{
-          type: 'cubic-horizontal',
-          style: {
-            // offset: 50,  // 拐弯处距离节点最小距离
-            // radius: 10,  // 拐弯处的圆角弧度，若不设置则为直角
-            lineWidth: 2,
-            stroke: '#A7B8C9'
-          }
-          // controlPoints: [{ x: 10, y: 20 }, { x: 20, y: 25 }]
-          // 其他配置
+          type: 'callChainEdge'
         }}
         registerCustomNode={initChainNode}
-        data={data}
+        //data={data.topologyNode}
+        data={_data}
         config={config}
         customCommands={commands(data)}
         toolBars={<ToolBar />}

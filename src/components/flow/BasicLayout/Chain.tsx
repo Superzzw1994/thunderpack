@@ -45,8 +45,8 @@ const Chain = (props) => {
     }, []);
   };
   const _data = useMemo(() => {
-    const { topologyNode } = data;
-    const { nodes, edges } = topologyNode.reduce((t, lists, index) => {
+    // const { topologyNode } = data;
+    const { nodes, edges } = data.reduce((t, lists, index) => {
       const { nodes, edges } = t;
       const config = {
         ...chainConfig,

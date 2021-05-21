@@ -55,6 +55,7 @@ class InitToolbarPlugin {
       });
     });
   }
+
   initEvents() {
     const graph = this.get('graph');
     const parentNode = this.get('container');

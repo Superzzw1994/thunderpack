@@ -7,7 +7,7 @@ const compose = (operator) => operator.reduce((t, c) => {
 const getLength = (node) => {
   const { nextList } = node;
   // const baseLength = nextList && nextList.length ? nextList.length : 0;
-  const baseLength = nextList ? nextList.length : 1;
+  const baseLength = (nextList && nextList.length) ? nextList.length : 1;
   const childrenLength = (nextList || []).reduce((t, c) => {
     const res = getLength(c);
     return t + res;

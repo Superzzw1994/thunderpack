@@ -37,6 +37,7 @@ export const initToolBarsCommand: customCommand = {
   resetZoom: {
     name: 'resetZoom',
     execute(graph, params) {
+      console.log(123);
       graph.zoomTo(1);
       graph.fitView();
       // graph.moveTo(100, 100);
@@ -61,7 +62,6 @@ export const initToolBarsCommand: customCommand = {
       const { event } = params;
       const shape = event.target;
       const node = event.item;
-      console.log('onNodeMouseOver');
       return {
         shape,
         node,
@@ -75,7 +75,6 @@ export const initToolBarsCommand: customCommand = {
       const { event } = params;
       const shape = event.target;
       const node = event.item;
-      console.log('onNodeMouseLeave');
       return {
         shape,
         node,

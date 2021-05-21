@@ -63,7 +63,7 @@ class Command {
     };
 
     // 向全局暴露 获取customCommand是否可以执行 的接口
-    graph.commandCanExecute = (name, canExecute) => {
+    graph.commandCanExecute = (name, canExecute = true) => {
       return this.enable(name, graph, canExecute);
     };
 
@@ -108,6 +108,7 @@ class Command {
     if (this[name]) {
       this[name].canExecute = canExecute;
     }
+    return this[name].canExecute;
   }
 
   destroyPlugin() {
