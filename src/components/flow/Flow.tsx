@@ -122,10 +122,10 @@ const Flow: React.FC<flowProps> = (props) => {
   const bindEvents = (graph) => {
     graph.on('node:click', emitEvent.bind(this, 'onNodeClick'));
     graph.on('node:dblclick', emitEvent.bind(this, 'onNodeDoubleClick'));
-    // graph.on('canvas:click', canvasClick);
+    graph.on('canvas:click', emitEvent.bind(this, 'onCanvasClick'));
     // graph.on('addNode', addNode);
-    // graph.on('node:mouseleave', nodeMouseLeave);
-    // graph.on('node:mouseover', nodeMouseOver);
+    graph.on('node:mouseleave', emitEvent.bind(this, 'onNodeMouseLeave'));
+    graph.on('node:mouseover', emitEvent.bind(this, 'onNodeMouseOver'));
     // graph.on('dragLineMoving', dragLineMoving);
     // graph.on('keydown', keyDown);
     // graph.on('addEdge', addEdge);
@@ -134,11 +134,11 @@ const Flow: React.FC<flowProps> = (props) => {
   };
   const unbindEvents = (graph) => {
     graph.on('node:click', emitEvent);
-    // graph.on('node:dblclick', nodeDoubleClick);
-    // graph.on('canvas:click', canvasClick);
+    graph.on('node:dblclick', emitEvent);
+    graph.on('canvas:click', emitEvent);
     // graph.on('addNode', addNode);
-    // graph.on('node:mouseleave', nodeMouseLeave);
-    // graph.on('node:mouseover', nodeMouseOver);
+    graph.on('node:mouseleave', emitEvent);
+    graph.on('node:mouseover', emitEvent);
     // graph.on('dragLineMoving', dragLineMoving);
     // graph.on('keydown', keyDown);
     // graph.on('addEdge', addEdge);

@@ -55,6 +55,34 @@ export const initToolBarsCommand: customCommand = {
       };
     }
   },
+  onNodeMouseOver: {
+    name: 'onNodeMouseOver',
+    execute(graph, params) {
+      const { event } = params;
+      const shape = event.target;
+      const node = event.item;
+      console.log('onNodeMouseOver');
+      return {
+        shape,
+        node,
+        ...params
+      };
+    }
+  },
+  onNodeMouseLeave: {
+    name: 'onNodeMouseLeave',
+    execute(graph, params) {
+      const { event } = params;
+      const shape = event.target;
+      const node = event.item;
+      console.log('onNodeMouseLeave');
+      return {
+        shape,
+        node,
+        ...params
+      };
+    }
+  },
   onNodeDoubleClick: {
     name: 'onNodeDoubleClick',
     commandWillExecute(graph, params = {}) {

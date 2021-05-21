@@ -155,28 +155,13 @@ const config = {
   rootMargin: 200
 };
 
-
 const Root = () => {
   const [graph, setGraph] = useState<Object | null>(null);
   const getGraph = (graph: Object) => {
     setGraph(graph);
   };
   const commands = useMemo(() => {
-    return (data) => ({
-      onNodeClick: {
-        name: 'onNodeClick',
-        execute(graph, params) {
-          const { event } = params;
-          const shape = event.target;
-          const node = event.item;
-          return {
-            shape,
-            node,
-            ...params
-          };
-        }
-      }
-    });
+    return (data) => customCommands;
   }, [data]);
   return (
     <div className={'rootWrapper'}>
